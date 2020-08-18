@@ -1,0 +1,11 @@
+{
+    "name": "gestao-usuario",
+    "version": "1.0.0",
+    "description": "Api crud de usuario",
+    "engines": {
+      "python": "3.8.2",
+      "flask": "1.1.2"
+    },
+    "main": "server.py",
+    "author": "anapaulalopes"
+  }
