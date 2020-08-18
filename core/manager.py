@@ -21,8 +21,8 @@ db = SQLAlchemy(app)
 marsh = Marshmallow(app)
 
 # model
-from core.models import user
+from .models import user
 
 # blueprint
-from core.controllers.status import bp_status
+from .controllers.status import bp_status
 app.register_blueprint(bp_status)

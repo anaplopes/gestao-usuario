@@ -1,4 +1,5 @@
-from manager import marsh
+# -*- coding: utf-8 -*-
+from ..manager import marsh
 
 
 class UserSchema(marsh.Schema):
@@ -7,7 +8,6 @@ class UserSchema(marsh.Schema):
     class Meta:
         fields = ('uuid', 'username', 'password', 'name', 'email', 'create_on')
         
-        
-        
-user = UserSchema()
-users = UserSchema(many=True)
+ 
+user_schema = UserSchema()
+users_schema = UserSchema(many=True)

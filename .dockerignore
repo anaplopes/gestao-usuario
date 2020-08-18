@@ -4,6 +4,9 @@ README.md
 .idea
 .editorconfig
 
+__pycache__/
+test/
+
 # Environments
 venv
 .env

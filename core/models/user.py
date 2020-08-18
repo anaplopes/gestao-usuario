@@ -1,6 +1,7 @@
-from manager import db
+# -*- coding: utf-8 -*-
+from ..manager import db
 from datetime import datetime
-from core.utils.generate_uuid import generate_uuid
+from ..utils.generate_uuid import generate_uuid
 
 
 class User(db.Model):
@@ -12,6 +13,7 @@ class User(db.Model):
     name = db.Column(db.String(100), nullable=False)
     email = db.Column(db.String(100), unique=True, nullable=False)
     create_on = db.Column(db.DateTime, default=datetime.now())
+    isActive = db.Column(db.Boolean, default=True)
     
     def __init__(self, username, password, name, email):
         self.username = username
