@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from db_connection import ConnectionDbService
+from service.db_connection import ConnectionDbService
 
 
 class ExecutionDbService:

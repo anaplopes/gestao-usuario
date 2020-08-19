@@ -23,3 +23,7 @@ class UserModel(db.Model):
         self.password = password
         self.name = name
         self.email = email
+
+
+db.create_all()
+db.session.commit()

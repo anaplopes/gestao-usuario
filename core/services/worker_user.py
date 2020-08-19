@@ -3,7 +3,7 @@ import json
 import traceback
 from models.user import UserModel
 from flask import jsonify, request
-from db_execution import ExecutionDbService
+from services.db_execution import ExecutionDbService
 from schemas.user import user_schema, users_schema
 from werkzeug.security import generate_password_hash
 

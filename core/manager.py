@@ -18,7 +18,6 @@ app_settings = os.getenv(
 )
 app.config.from_object(app_settings)
 db = SQLAlchemy(app)
-db.init_app(app)
 marsh = Marshmallow(app)
 
 # model
@@ -27,3 +26,6 @@ from models import user
 # blueprint
 from controllers.status import bp_status
 app.register_blueprint(bp_status)
+
+from controllers.user import bp_user
+app.register_blueprint(bp_user)

@@ -29,6 +29,6 @@ class User(MethodView):
         return self.worker.delete(id=id)
 
 view = User.as_view('user')
-bp_news.add_url_rule('/user', view_func=view, methods=['GET'])
-bp_news.add_url_rule('/user/<id>', view_func=view, methods=['GET', 'PUT', 'DELETE'])
-bp_news.add_url_rule('/user/create', view_func=view, methods=['POST'])
+bp_user.add_url_rule('/user', view_func=view, methods=['GET'])
+bp_user.add_url_rule('/user/<id>', view_func=view, methods=['GET', 'PUT', 'DELETE'])
+bp_user.add_url_rule('/user/create', view_func=view, methods=['POST'])
