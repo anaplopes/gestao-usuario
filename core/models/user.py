@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
-from ..manager import db
+from manager import db
 from datetime import datetime
-from ..utils.generate_uuid import generate_uuid
+from utils.generate_uuid import generate_uuid
 
 
 class User(db.Model):

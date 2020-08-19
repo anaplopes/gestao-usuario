@@ -7,7 +7,7 @@ from sqlalchemy.orm import sessionmaker
 class ConnectionDbService:  
     """ Serviço responsável por cria uma conexão com o database,
         disponibilizar sessões,
-        salvar alterações e fechar tudo ao termino do processo. """
+        fazer commit e encerrar a conexão. """
 
     def __init__(self):
         self.url_engine = os.getenv('CONNECTION_URL', '')

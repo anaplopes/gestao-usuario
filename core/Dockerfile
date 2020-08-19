@@ -11,5 +11,4 @@ RUN pip install --upgrade pip
 # Install the dependencies
 RUN pip install -r requirements.txt
 RUN pip install uWSGI
-RUN ls -l
 CMD ["uwsgi" , "app.ini"]

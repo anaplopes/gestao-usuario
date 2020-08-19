@@ -1,37 +1,73 @@
 # -*- coding: utf-8 -*-
-from ..models.user import User
-from ..schemas.user import user_schema, users_schema
-from .db_execution import DbExecutionService
+import sys
+import json
+import traceback
+from models.user import User
+from schemas.user import user_schema, users_schema
+from db_execution import DbExecutionService
+from flask import Blueprint, jsonify, request
+from werkzeug.security import generate_password_hash
 
 
 class WorkerUserService():
+    """ Serviço responsável pela regra de negócio 
+        e as requisições ao db_execution. """
     
     def __init__(self):
-        self.db = DbExecutionService()
-        
+        self.db_exec = DbExecutionService()
     
-    def create(self, payload):
-        if not payload:
-            return {
-                'statusCode': 400,
+    
+    def create(self):
+        username = request.json['username']
+        password = request.json['password']
+        name = request.json['name']
+        email = request.json['email']
+        pass_hash = generate_password_hash(password)
+        user = Users(username, pass_hash, name, email)
+        
+        try:
+            db_exec.create_one(data=user)
+            result = user_schema.dump(user)
+            return jsonify({
+                'output': {
+                    'data': result.data,
+                    'message': 'user saved successfully',
+                    'error': None,
+                    'isValid': True
+                }
+            }), 201
+
+        except Exception:
+            return jsonify({
                 'output': {
                     'data': [],
-                    'error': 'I was expecting a payload, but apparently on is missing',
+                    'error': traceback.format_exc(),
                     'isValid': False
                 }
-            }
+            }), 500
+    
+    # def create(self, payload):
+    #     if not payload:
+    #         return {
+    #             'statusCode': 400,
+    #             'output': {
+    #                 'data': [],
+    #                 'error': 'I was expecting a payload, but apparently on is missing',
+    #                 'isValid': False
+    #             }
+    #         }
         
-        payload['dt_publish'] = datetime.utcnow()
-        self.db.create_one(payload)
-        return {
-            'statusCode': 200,
-            'output': {
-                'data': [],
-                'message': 'User saved successfully',
-                'error': None,
-                'isValid': True
-            }
-        }
+    #     payload['dt_publish'] = datetime.utcnow()
+    #     self.db.create_one(payload)
+    #     return {
+    #         'statusCode': 201,
+    #         'output': {
+    #             'data': [],
+    #             'message': 'User saved successfully',
+    #             'error': None,
+    #             'isValid': True
+    #         }
+    #     }
 
 
     # def list(self):

@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 from sqlalchemy_filters import apply_filters, apply_sort
-from .db_connection import ConnectionDbService
+from db_connection import ConnectionDbService
 
 
 class ExecutionDbService:
-    """ Serviço responsável por solicitar sessão,
-        executar query e solicitar o salvamento dos dados. """
+    """ Serviço responsável por solicitar sessão ao db_connection 
+        e executar query. """
 
     def __init__(self):
         self.connection = ConnectionDbService()
