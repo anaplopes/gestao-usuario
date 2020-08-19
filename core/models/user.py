@@ -4,8 +4,11 @@ from datetime import datetime
 from utils.generate_uuid import generate_uuid
 
 
-class User(db.Model):
+class UserModel(db.Model):
     """ Definição de tabela de usuários """
+    
+    __tablename__ = 'user'
+    __table_args__ = {'schema': 'public'}
     
     uuid = db.Column(db.String(), primary_key=True, default=generate_uuid())
     username = db.Column(db.String(20), unique=True, nullable=False)

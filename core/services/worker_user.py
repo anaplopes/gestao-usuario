@@ -1,20 +1,19 @@
 # -*- coding: utf-8 -*-
-import sys
 import json
 import traceback
-from models.user import User
+from models.user import UserModel
+from flask import jsonify, request
+from db_execution import ExecutionDbService
 from schemas.user import user_schema, users_schema
-from db_execution import DbExecutionService
-from flask import Blueprint, jsonify, request
 from werkzeug.security import generate_password_hash
 
 
-class WorkerUserService():
+class WorkerUserService:
     """ Serviço responsável pela regra de negócio 
         e as requisições ao db_execution. """
     
     def __init__(self):
-        self.db_exec = DbExecutionService()
+        self.db_execution = ExecutionDbService()
     
     
     def create(self):
@@ -23,15 +22,16 @@ class WorkerUserService():
         name = request.json['name']
         email = request.json['email']
         pass_hash = generate_password_hash(password)
-        user = Users(username, pass_hash, name, email)
         
+        user = UserModel(username, pass_hash, name, email)
         try:
-            db_exec.create_one(data=user)
+            self.db_execution.add(user)
+            self.db_execution.complete()
             result = user_schema.dump(user)
             return jsonify({
                 'output': {
                     'data': result.data,
-                    'message': 'user saved successfully',
+                    'message': 'successfully created',
                     'error': None,
                     'isValid': True
                 }
@@ -41,148 +41,157 @@ class WorkerUserService():
             return jsonify({
                 'output': {
                     'data': [],
+                    'message': 'unable to create',
+                    'error': traceback.format_exc(),
+                    'isValid': False
+                }
+            }), 500
+
+    
+    def list(self):
+        try:
+            user = UserModel.query.filter_by(isActive=True).all()
+            if user:
+                result = users_schema.dump(user)
+                return jsonify({
+                    'output': {
+                        'data': result.data,
+                        'message': 'successfully fetched',
+                        'error': None,
+                        'isValid': True
+                    }
+                }), 200
+            
+            return jsonify({
+                'output': {
+                    'data': [],
+                    'message': 'nothing found',
+                    'error': None,
+                    'isValid': False
+                }
+            }), 404
+
+        except Exception:
+            return jsonify({
+                'output': {
+                    'data': [],
+                    'message': None,
                     'error': traceback.format_exc(),
                     'isValid': False
                 }
             }), 500
     
-    # def create(self, payload):
-    #     if not payload:
-    #         return {
-    #             'statusCode': 400,
-    #             'output': {
-    #                 'data': [],
-    #                 'error': 'I was expecting a payload, but apparently on is missing',
-    #                 'isValid': False
-    #             }
-    #         }
+    
+    def read(self, id):
+        try:
+            user = UserModel.query.filter_by(uuid=id, isActive=True).first()
+            if user:
+                result = user_schema.dump(user)
+                return jsonify({
+                    'output': {
+                        'data': result.data,
+                        'message': 'successfully fetched',
+                        'error': None,
+                        'isValid': True
+                    }
+                }), 200
+            
+            return jsonify({
+                'output': {
+                    'data': [],
+                    'message': "user don't exist",
+                    'error': None,
+                    'isValid': False
+                }
+            }), 404
+
+        except Exception:
+            return jsonify({
+                'output': {
+                    'data': [],
+                    'message': None,
+                    'error': traceback.format_exc(),
+                    'isValid': False
+                }
+            }), 500
+    
+            
+    def update(self, id):
+        username = request.json['username']
+        password = request.json['password']
+        name = request.json['name']
+        email = request.json['email']
         
-    #     payload['dt_publish'] = datetime.utcnow()
-    #     self.db.create_one(payload)
-    #     return {
-    #         'statusCode': 201,
-    #         'output': {
-    #             'data': [],
-    #             'message': 'User saved successfully',
-    #             'error': None,
-    #             'isValid': True
-    #         }
-    #     }
+        user = UserModel.query.filter_by(uuid=id, isActive=True).first()
+        if not user:
+            return jsonify({
+                'output': {
+                    'data': [],
+                    'message': "user don't exist",
+                    'error': None,
+                    'isValid': False
+                }
+            }), 404
+        
+        pass_hash = generate_password_hash(password)
+        try:
+            user.username = username
+            user.password = pass_hash
+            user.name = name
+            user.email = email
+            self.db_execution.complete()
+            result = user_schema.dump(user)
+            return jsonify({
+                'output': {
+                    'data': result.data,
+                    'message': 'successfully updated',
+                    'error': None,
+                    'isValid': True
+                }
+            }), 201
 
-
-    # def list(self):
-    #     users = self.db.read_all(table=User)
-    #     return {
-    #         'statusCode': 200,
-    #         'output': {
-    #             'data': users,
-    #             'qtd_registro': len(news),
-    #             'error': None,
-    #             'isValid': True
-    #         }
-    #     }
+        except Exception:
+            return jsonify({
+                'output': {
+                    'data': [],
+                    'message': 'unable to update',
+                    'error': traceback.format_exc(),
+                    'isValid': False
+                }
+            }), 500
     
     
-    # def read(self, id):
-    #     if not id:
-    #         return {
-    #             'statusCode': 400,
-    #             'output': {
-    #                 'data': [],
-    #                 'error': 'I was expecting a id, but apparently on is missing',
-    #                 'isValid': False
-    #             }
-    #         }
-            
-    #     news = self.db.find_one(collection='news', id=id, param={'isActive': True})
-    #     if not news:
-    #         return {
-    #             'statusCode': 404,
-    #             'output': {
-    #                 'data': [],
-    #                 'error': 'Id does not exist',
-    #                 'isValid': False
-    #             }
-    #         }
-            
-    #     return {
-    #         'statusCode': 200,
-    #         'output': {
-    #             'data': {
-    #                 "_id": news['_id'],
-    #                 "title": news['title'],
-    #                 "content": news['content'],
-    #                 "dt_publish": news['dt_publish']
-    #             },
-    #             'error': None,
-    #             'isValid': True
-    #         }
-    #     }
+    def delete(self, id):
+        user = UserModel.query.filter_by(uuid=id, isActive=True).first()
+        if not user:
+            return jsonify({
+                'output': {
+                    'data': [],
+                    'message': "user don't exist",
+                    'error': None,
+                    'isValid': False
+                }
+            }), 404
+        
+        try:
+            user.isActive = False
+            self.db_execution.complete()
+            result = user_schema.dump(user)
+            return jsonify({
+                'output': {
+                    'data': result.data,
+                    'message': 'successfully deleted',
+                    'error': None,
+                    'isValid': True
+                }
+            }), 200
 
-
-    # def update(self, id, payload):
-    #     if not id or not payload:
-    #         return {
-    #             'statusCode': 400,
-    #             'output': {
-    #                 'data': [],
-    #                 'error': 'I was expecting a id and a payload, but apparently on (or both) is missing',
-    #                 'isValid': False
-    #             }
-    #         }
-        
-    #     news = self.db.find_one(collection='news', id=id, param={'isActive': True})
-    #     if not news:
-    #         return {
-    #             'statusCode': 404,
-    #             'output': {
-    #                 'data': [],
-    #                 'error': 'Id does not exist',
-    #                 'isValid': False
-    #             }
-    #         }
-        
-    #     self.db.update_one(collection='news', id=id, data=payload)
-    #     return {
-    #         'statusCode': 200,
-    #         'output': {
-    #             'data': [],
-    #             'message': 'News updated successfully',
-    #             'error': None,
-    #             'isValid': True
-    #         }
-    #     }
-    
-        
-    # def delete(self, id):
-    #     if not id:
-    #         return {
-    #             'statusCode': 400,
-    #             'output': {
-    #                 'data': [],
-    #                 'error': 'I was expecting a id, but apparently on is missing',
-    #                 'isValid': False
-    #             }
-    #         }
-            
-    #     news = self.db.find_one(collection='news', id=id, param={'isActive': True})
-    #     if not news:
-    #         return {
-    #             'statusCode': 404,
-    #             'output': {
-    #                 'data': [],
-    #                 'error': 'Id does not exist',
-    #                 'isValid': False
-    #             }
-    #         }
-        
-    #     self.db.update_one(collection='news', id=id, data={'isActive': False})
-    #     return {
-    #         'statusCode': 200,
-    #         'output': {
-    #             'data': [],
-    #             'message': 'News successfully deleted',
-    #             'error': None,
-    #             'isValid': True
-    #         }
-    #     }
+        except Exception:
+            return jsonify({
+                'output': {
+                    'data': [],
+                    'message': 'unable to delete',
+                    'error': traceback.format_exc(),
+                    'isValid': False
+                }
+            }), 500

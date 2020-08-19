@@ -6,7 +6,7 @@ class UserSchema(marsh.Schema):
     """ Definição de schema de usuários """
     
     class Meta:
-        fields = ('uuid', 'username', 'password', 'name', 'email', 'create_on')
+        fields = ('uuid', 'username', 'password', 'name', 'email', 'create_on', 'isActive')
         
  
 user_schema = UserSchema()
