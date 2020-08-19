@@ -1,6 +1,6 @@
 .vscode
 .idea
-.editorconfig
+# .editorconfig
 .data/
 
 # Created by https://www.gitignore.io/api/flask
@@ -99,7 +99,7 @@ celerybeat-schedule
 *.sage.py
 
 # Environments
-.env
+# .env
 .venv
 env/
 venv/
