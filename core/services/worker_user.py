@@ -16,6 +16,9 @@ class WorkerUserService:
         password = request.json['password']
         name = request.json['name']
         email = request.json['email']
+        address = request.json['address']
+        city = request.json['city']
+        country = request.json['country']
         
         user_exist = UserModel.query.filter_by(username=username, isActive=True).first()
         result = user_schema.dump(user_exist)
@@ -30,7 +33,7 @@ class WorkerUserService:
             }), 400
         
         pass_hash = generate_password_hash(password)
-        user = UserModel(username, pass_hash, name, email)
+        user = UserModel(username, pass_hash, name, email, address, city, country)
         try:
             db.session.add(user)
             db.session.commit()
@@ -132,6 +135,9 @@ class WorkerUserService:
         password = request.json['password']
         name = request.json['name']
         email = request.json['email']
+        address = request.json['address']
+        city = request.json['city']
+        country = request.json['country']
         
         user = UserModel.query.filter_by(uuid=id, isActive=True).first()
         if not user:
@@ -150,6 +156,9 @@ class WorkerUserService:
             user.password = pass_hash
             user.name = name
             user.email = email
+            user.address = address
+            user.city = city
+            user.country = country
             db.session.commit()
             result = user_schema.dump(user)
             return jsonify({
