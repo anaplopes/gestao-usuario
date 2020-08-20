@@ -1,37 +1,44 @@
 # -*- coding: utf-8 -*-
 import json
 import traceback
-from models.user import UserModel
+from manager import db
 from flask import jsonify, request
-from services.db_execution import ExecutionDbService
-from schemas.user import user_schema, users_schema
 from werkzeug.security import generate_password_hash
+from core.models.user import UserModel, user_schema, users_schema
 
 
 class WorkerUserService:
     """ Serviço responsável pela regra de negócio 
         e as requisições ao db_execution. """
     
-    def __init__(self):
-        self.db_execution = ExecutionDbService()
-    
-    
     def create(self):
         username = request.json['username']
         password = request.json['password']
         name = request.json['name']
         email = request.json['email']
-        pass_hash = generate_password_hash(password)
         
+        user_exist = UserModel.query.filter_by(username=username, isActive=True).first()
+        result = user_schema.dump(user_exist)
+        if user_exist:
+            return jsonify({
+                'output': {
+                    'data': result,
+                    'message': 'user already registered',
+                    'error': None,
+                    'isValid': False
+                }
+            }), 400
+        
+        pass_hash = generate_password_hash(password)
         user = UserModel(username, pass_hash, name, email)
         try:
-            self.db_execution.add(user)
-            self.db_execution.complete()
+            db.session.add(user)
+            db.session.commit()
             result = user_schema.dump(user)
             return jsonify({
                 'output': {
-                    'data': result.data,
-                    'message': 'successfully created',
+                    'data': result,
+                    'message': 'successfully registered',
                     'error': None,
                     'isValid': True
                 }
@@ -49,13 +56,17 @@ class WorkerUserService:
 
     
     def list(self):
+        page = int(request.args.get('page')) if request.args.get('page') else 1
+        page_size = int(request.args.get('pageSize')) if request.args.get('pageSize') else 10
+        
         try:
-            user = UserModel.query.filter_by(isActive=True).all()
+            user = UserModel.query.filter_by(isActive=True).paginate(page, page_size)
             if user:
-                result = users_schema.dump(user)
+                result = users_schema.dump(user.items)
                 return jsonify({
                     'output': {
-                        'data': result.data,
+                        'data': result,
+                        'qtd_registro': len(result),
                         'message': 'successfully fetched',
                         'error': None,
                         'isValid': True
@@ -89,7 +100,7 @@ class WorkerUserService:
                 result = user_schema.dump(user)
                 return jsonify({
                     'output': {
-                        'data': result.data,
+                        'data': result,
                         'message': 'successfully fetched',
                         'error': None,
                         'isValid': True
@@ -139,11 +150,11 @@ class WorkerUserService:
             user.password = pass_hash
             user.name = name
             user.email = email
-            self.db_execution.complete()
+            db.session.commit()
             result = user_schema.dump(user)
             return jsonify({
                 'output': {
-                    'data': result.data,
+                    'data': result,
                     'message': 'successfully updated',
                     'error': None,
                     'isValid': True
@@ -175,11 +186,11 @@ class WorkerUserService:
         
         try:
             user.isActive = False
-            self.db_execution.complete()
+            db.session.commit()
             result = user_schema.dump(user)
             return jsonify({
                 'output': {
-                    'data': result.data,
+                    'data': result,
                     'message': 'successfully deleted',
                     'error': None,
                     'isValid': True
