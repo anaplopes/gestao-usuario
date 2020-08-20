@@ -8,7 +8,8 @@ class BaseConfig:
     SECRET_KEY = os.getenv('SECRET_KEY', '')
     DEBUG = False
     SQLALCHEMY_TRACK_MODIFICATIONS = False
-    SQLALCHEMY_DATABASE_URI = os.getenv('CONNECTION_URL', '')
+    CONNECTION_URL_DEFAULT = 'sqlite:///' + os.path.join(basedir, 'app.db')
+    SQLALCHEMY_DATABASE_URI = os.getenv('CONNECTION_URL', CONNECTION_URL_DEFAULT)
     BCRYPT_LOG_ROUNDS = 13
 
 

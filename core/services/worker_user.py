@@ -48,6 +48,7 @@ class WorkerUserService:
             }), 201
 
         except Exception:
+            db.session.rollback()
             return jsonify({
                 'output': {
                     'data': [],
@@ -171,6 +172,7 @@ class WorkerUserService:
             }), 201
 
         except Exception:
+            db.session.rollback()
             return jsonify({
                 'output': {
                     'data': [],
@@ -207,6 +209,7 @@ class WorkerUserService:
             }), 200
 
         except Exception:
+            db.session.rollback()
             return jsonify({
                 'output': {
                     'data': [],
