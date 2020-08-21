@@ -9,7 +9,7 @@ from core.models.user import UserModel, user_schema, users_schema
 
 class WorkerUserService:
     """ Serviço responsável pela regra de negócio 
-        e as requisições ao db_execution. """
+        e as requisições ao db """
     
     def create(self):
         username = request.json['username']

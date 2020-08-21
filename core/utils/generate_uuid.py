@@ -3,6 +3,6 @@ import uuid
 
 
 def generate_uuid():
-    """Create UUID4."""
+    """ Responsável pela criação do uuid4 """
     
     return str(uuid.uuid4())

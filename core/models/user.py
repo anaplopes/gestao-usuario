@@ -7,7 +7,7 @@ from core.utils.generate_avatar import generate_avatar
 
 
 class UserModel(db.Model):
-    """ Definição de tabela de usuários """
+    """ Definição de modelo de usuário """
     
     __tablename__ = 'user'
     

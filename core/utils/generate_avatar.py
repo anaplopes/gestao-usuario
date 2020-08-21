@@ -3,7 +3,7 @@ import hashlib
 
 
 def generate_avatar(email):
-    """Create avatar."""
+    """ Responsável pela criação do avatar """
     
     prefix = 'https://www.gravatar.com/avatar/'
     suffix = hashlib.md5(email.lower().encode('utf-8')).hexdigest()
