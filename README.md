@@ -1,6 +1,6 @@
-# Api Gestão Usuário
+# Api Gestão Usuários
 
-![](arquitetura.png)
+![](arquitetura_simplificada.png)
 
 Steps to run this project:
 
