@@ -1,6 +1,6 @@
 # Api Gestão Usuário
 
-![](arquitetura.bmp)
+![](arquitetura.png)
 
 Steps to run this project:
 
