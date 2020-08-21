@@ -1,5 +1,5 @@
 {
-    "name": "gestao-usuario",
+    "name": "gestao-usuarios",
     "version": "1.0.0",
     "description": "Api crud de usuario",
     "engines": {
