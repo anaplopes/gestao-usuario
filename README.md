@@ -4,40 +4,29 @@
 
 Steps to run this project:
 
-1. You should create an virtual environment
+1. You should run the containers and build the images
 ```shell
-    pip install virtualenv
-    virtualenv venv
-```
-- to windows
-```shell
-    venv\Scripts\activate
+    docker-compose up --build
 ```
 
-- to linux
-```shell
-    venv\bin\activate
-```
+2. Then create db connection [.env](core/.env)
+- DRIVER: PostgreSQL
+- HOST: db
+- PORT: 5432
+- DATABASE: usuarios
+- USERNAME: postgres
+- PASSWORD: secretpassword
 
-2. Then install [requirements.txt](requirements.txt)
-```shell
-    pip install -r requirements.txt
-```
-
-3. To run project you must run flask
-```shell
-    python server.py
-```
+3. To run project you must access
+http://127.0.0.1:80/
 
 
 ## Endpoint:
-
 
 ### Status da API
 | Methods  | Actions                   | Url                                         |
 |:--------:|:--------------------------|:--------------------------------------------|
 | GET      | status da api             | {{url}/                                     |
-
 
 ### Usuários
 | Methods  | Actions                                    | Url                            |
