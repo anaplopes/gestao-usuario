@@ -30,7 +30,7 @@ Steps to run this project:
 ```
 
 
-## Endpoint: [Documentação](https://documenter.getpostman.com/view/6409788/T1LV8Nss?version=latest)
+## Endpoint:
 
 
 ### Status da API
