@@ -9,7 +9,7 @@ Steps to run this project:
     docker-compose up --build
 ```
 
-2. Then create db connection [.env](core/.env)
+2. Then create db connection
 - DRIVER: PostgreSQL
 - HOST: db
 - PORT: 5432
