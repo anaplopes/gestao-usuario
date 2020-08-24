@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
-from manager import db
-from manager import marsh
+from core.app import db
+from core.app import marsh
 from datetime import datetime
 from core.utils.generate_uuid import generate_uuid
 from core.utils.generate_avatar import generate_avatar

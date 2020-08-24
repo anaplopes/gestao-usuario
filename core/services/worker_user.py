@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import json
 import traceback
-from manager import db
+from core.app import db
 from flask import jsonify, request
 from werkzeug.security import generate_password_hash
 from core.models.user import UserModel, user_schema, users_schema
