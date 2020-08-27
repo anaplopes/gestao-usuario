@@ -11,7 +11,7 @@ class UserModel(db.Model):
     
     __tablename__ = 'user'
     
-    uuid = db.Column(db.String(), primary_key=True, default=generate_uuid())
+    uuid = db.Column(db.String(), primary_key=True, default=generate_uuid)
     avatar = db.Column(db.String(), nullable=False)
     username = db.Column(db.String(20), unique=True, nullable=False)
     password = db.Column(db.String(), nullable=False)
@@ -20,7 +20,7 @@ class UserModel(db.Model):
     address = db.Column(db.String(100), nullable=False)
     city = db.Column(db.String(100), nullable=False)
     country = db.Column(db.String(100), nullable=False)
-    create_on = db.Column(db.DateTime, default=datetime.now())
+    create_on = db.Column(db.DateTime(timezone=True), default=datetime.now)
     isActive = db.Column(db.Boolean, default=True)
     
     def __init__(self, username, password, name, email, address, city, country, avatar=None):
@@ -32,9 +32,6 @@ class UserModel(db.Model):
         self.city = city
         self.country = country
         self.avatar = generate_avatar(self.email)
-
-db.create_all()
-db.session.commit()
 
 
 class UserSchema(marsh.Schema):
